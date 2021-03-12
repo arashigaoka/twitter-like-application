@@ -1,7 +1,7 @@
 {
-  "name": "next-boilerplate",
+  "name": "twitter-like-application",
   "version": "1.0.0",
-  "description": "next-boilerplate",
+  "description": "twitter-like-application",
   "scripts": {
     "dev": "next",
     "build": "next build",
