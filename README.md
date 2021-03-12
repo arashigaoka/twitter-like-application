@@ -1,8 +1,3 @@
-# My Next TypeScript Boilerplate
+# Twitter Like Application
 
-This boilerplate contains:
-
-- Next.js
-- TypeScript
-- Tailwind CSS
-- jest
+This repo is a sample of twitter-like-application that works offline and synchronizes in real time
