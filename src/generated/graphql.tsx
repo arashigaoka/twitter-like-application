@@ -245,13 +245,13 @@ export enum Order_By {
 /** columns and relationships of "posts" */
 export type Posts = {
   __typename?: 'posts';
+  content: Scalars['String'];
   created_at: Scalars['timestamptz'];
   id: Scalars['Int'];
   /** fetch data from the table: "replys" */
   replys: Array<Replys>;
   /** An aggregate relationship */
   replys_aggregate: Replys_Aggregate;
-  title: Scalars['String'];
   updated_at: Scalars['timestamptz'];
   /** An object relationship */
   user: Users;
@@ -346,10 +346,10 @@ export type Posts_Bool_Exp = {
   _and?: Maybe<Array<Posts_Bool_Exp>>;
   _not?: Maybe<Posts_Bool_Exp>;
   _or?: Maybe<Array<Posts_Bool_Exp>>;
+  content?: Maybe<String_Comparison_Exp>;
   created_at?: Maybe<Timestamptz_Comparison_Exp>;
   id?: Maybe<Int_Comparison_Exp>;
   replys?: Maybe<Replys_Bool_Exp>;
-  title?: Maybe<String_Comparison_Exp>;
   updated_at?: Maybe<Timestamptz_Comparison_Exp>;
   user?: Maybe<Users_Bool_Exp>;
   user_id?: Maybe<String_Comparison_Exp>;
@@ -368,10 +368,10 @@ export type Posts_Inc_Input = {
 
 /** input type for inserting data into table "posts" */
 export type Posts_Insert_Input = {
+  content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
   replys?: Maybe<Replys_Arr_Rel_Insert_Input>;
-  title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user?: Maybe<Users_Obj_Rel_Insert_Input>;
   user_id?: Maybe<Scalars['String']>;
@@ -380,18 +380,18 @@ export type Posts_Insert_Input = {
 /** aggregate max on columns */
 export type Posts_Max_Fields = {
   __typename?: 'posts_max_fields';
+  content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "posts" */
 export type Posts_Max_Order_By = {
+  content?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
-  title?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
   user_id?: Maybe<Order_By>;
 };
@@ -399,18 +399,18 @@ export type Posts_Max_Order_By = {
 /** aggregate min on columns */
 export type Posts_Min_Fields = {
   __typename?: 'posts_min_fields';
+  content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "posts" */
 export type Posts_Min_Order_By = {
+  content?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
-  title?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
   user_id?: Maybe<Order_By>;
 };
@@ -440,10 +440,10 @@ export type Posts_On_Conflict = {
 
 /** Ordering options when selecting data from "posts". */
 export type Posts_Order_By = {
+  content?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   replys_aggregate?: Maybe<Replys_Aggregate_Order_By>;
-  title?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
   user?: Maybe<Users_Order_By>;
   user_id?: Maybe<Order_By>;
@@ -457,11 +457,11 @@ export type Posts_Pk_Columns_Input = {
 /** select columns of table "posts" */
 export enum Posts_Select_Column {
   /** column name */
+  Content = 'content',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   Id = 'id',
-  /** column name */
-  Title = 'title',
   /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
@@ -470,9 +470,9 @@ export enum Posts_Select_Column {
 
 /** input type for updating data in table "posts" */
 export type Posts_Set_Input = {
+  content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
-  title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
 };
@@ -524,11 +524,11 @@ export type Posts_Sum_Order_By = {
 /** update columns of table "posts" */
 export enum Posts_Update_Column {
   /** column name */
+  Content = 'content',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   Id = 'id',
-  /** column name */
-  Title = 'title',
   /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
@@ -1317,7 +1317,25 @@ export type GetPostsQuery = (
   { __typename?: 'query_root' }
   & { posts: Array<(
     { __typename?: 'posts' }
-    & Pick<Posts, 'id' | 'user_id' | 'title'>
+    & Pick<Posts, 'id' | 'user_id' | 'content'>
+    & { user: (
+      { __typename?: 'users' }
+      & Pick<Users, 'name'>
+    ) }
+  )> }
+);
+
+export type AddPostsMutationVariables = Exact<{
+  content: Scalars['String'];
+  user_id: Scalars['String'];
+}>;
+
+
+export type AddPostsMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_posts?: Maybe<(
+    { __typename?: 'posts_mutation_response' }
+    & Pick<Posts_Mutation_Response, 'affected_rows'>
   )> }
 );
 
@@ -1327,7 +1345,10 @@ export const GetPostsDocument = gql`
   posts {
     id
     user_id
-    title
+    content
+    user {
+      name
+    }
   }
 }
     `;
@@ -1358,3 +1379,40 @@ export function useGetPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;
 export type GetPostsLazyQueryHookResult = ReturnType<typeof useGetPostsLazyQuery>;
 export type GetPostsQueryResult = Apollo.QueryResult<GetPostsQuery, GetPostsQueryVariables>;
+export const AddPostsDocument = gql`
+    mutation addPosts($content: String!, $user_id: String!) {
+  insert_posts(
+    objects: {content: $content, user_id: $user_id}
+    on_conflict: {constraint: posts_pkey, update_columns: content}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export type AddPostsMutationFn = Apollo.MutationFunction<AddPostsMutation, AddPostsMutationVariables>;
+
+/**
+ * __useAddPostsMutation__
+ *
+ * To run a mutation, you first call `useAddPostsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPostsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPostsMutation, { data, loading, error }] = useAddPostsMutation({
+ *   variables: {
+ *      content: // value for 'content'
+ *      user_id: // value for 'user_id'
+ *   },
+ * });
+ */
+export function useAddPostsMutation(baseOptions?: Apollo.MutationHookOptions<AddPostsMutation, AddPostsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPostsMutation, AddPostsMutationVariables>(AddPostsDocument, options);
+      }
+export type AddPostsMutationHookResult = ReturnType<typeof useAddPostsMutation>;
+export type AddPostsMutationResult = Apollo.MutationResult<AddPostsMutation>;
+export type AddPostsMutationOptions = Apollo.BaseMutationOptions<AddPostsMutation, AddPostsMutationVariables>;
