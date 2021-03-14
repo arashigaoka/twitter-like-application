@@ -1,6 +1,8 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Head from 'next/head';
 import { useState } from 'react';
+import { Button } from '../components/atoms/Button';
+import { Card } from '../components/organisms/Card';
 import {
   GetPostsQuery,
   AddPostsMutation,
@@ -15,6 +17,10 @@ const GET_POSTS = gql`
       content
       user {
         name
+      }
+      replys {
+        id
+        comment
       }
     }
   }
@@ -64,27 +70,26 @@ export default function Top(): JSX.Element {
               onChange={(e) => setContent(e.target.value)}
               placeholder="Let's add posts!"
             />
-            <button
-              type="button"
-              className="mt-1 bg-blue-400 hover:bg-blue-700 text-white p-2"
-              onClick={(e) => {
+            <Button
+              label="Submit"
+              clickHandler={() =>
                 addPosts({
                   variables: { content, user_id: 'test1' },
-                });
-              }}
-            >
-              Submit
-            </button>
+                })
+              }
+            />
           </div>
           <div className="mt-10">
             <h2 className="text-xl text-gray-700">All Posts</h2>
-            <ul>
+            <ul className="space-y-2">
               {data.posts.map((post) => (
-                <li key={post.id} className="border p-4">
-                  <div>{post.content}</div>
-                  <div className="text-gray-700 text-sm text-right">
-                    by {post.user.name}
-                  </div>
+                <li key={post.id}>
+                  <Card
+                    id={post.id}
+                    content={post.content}
+                    userName={post.user.name}
+                    replys={post.replys}
+                  />
                 </li>
               ))}
             </ul>

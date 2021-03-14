@@ -1310,6 +1310,19 @@ export enum Users_Update_Column {
   Name = 'name'
 }
 
+export type AddReplyMutationVariables = Exact<{
+  object: Replys_Insert_Input;
+}>;
+
+
+export type AddReplyMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_replys_one?: Maybe<(
+    { __typename?: 'replys' }
+    & Pick<Replys, 'id'>
+  )> }
+);
+
 export type GetPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1321,7 +1334,10 @@ export type GetPostsQuery = (
     & { user: (
       { __typename?: 'users' }
       & Pick<Users, 'name'>
-    ) }
+    ), replys: Array<(
+      { __typename?: 'replys' }
+      & Pick<Replys, 'id' | 'comment'>
+    )> }
   )> }
 );
 
@@ -1340,6 +1356,42 @@ export type AddPostsMutation = (
 );
 
 
+export const AddReplyDocument = gql`
+    mutation addReply($object: replys_insert_input!) {
+  insert_replys_one(
+    object: $object
+    on_conflict: {constraint: replys_pkey, update_columns: comment}
+  ) {
+    id
+  }
+}
+    `;
+export type AddReplyMutationFn = Apollo.MutationFunction<AddReplyMutation, AddReplyMutationVariables>;
+
+/**
+ * __useAddReplyMutation__
+ *
+ * To run a mutation, you first call `useAddReplyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddReplyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addReplyMutation, { data, loading, error }] = useAddReplyMutation({
+ *   variables: {
+ *      object: // value for 'object'
+ *   },
+ * });
+ */
+export function useAddReplyMutation(baseOptions?: Apollo.MutationHookOptions<AddReplyMutation, AddReplyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddReplyMutation, AddReplyMutationVariables>(AddReplyDocument, options);
+      }
+export type AddReplyMutationHookResult = ReturnType<typeof useAddReplyMutation>;
+export type AddReplyMutationResult = Apollo.MutationResult<AddReplyMutation>;
+export type AddReplyMutationOptions = Apollo.BaseMutationOptions<AddReplyMutation, AddReplyMutationVariables>;
 export const GetPostsDocument = gql`
     query getPosts {
   posts {
@@ -1348,6 +1400,10 @@ export const GetPostsDocument = gql`
     content
     user {
       name
+    }
+    replys {
+      id
+      comment
     }
   }
 }
