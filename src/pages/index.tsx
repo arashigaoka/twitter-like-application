@@ -1,30 +1,14 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/organisms/Card';
 import {
-  GetPostsQuery,
   AddPostsMutation,
   AddPostsMutationVariables,
+  Posts,
 } from '../generated/graphql';
-
-const GET_POSTS = gql`
-  query getPosts {
-    posts {
-      id
-      user_id
-      content
-      user {
-        name
-      }
-      replys {
-        id
-        comment
-      }
-    }
-  }
-`;
+import { createDb, MyDatabase } from '../utils/Database';
 
 const ADD_POSTS = gql`
   mutation addPosts($content: String!, $user_id: String!) {
@@ -38,19 +22,26 @@ const ADD_POSTS = gql`
 `;
 
 export default function Top(): JSX.Element {
-  const { loading, error, data } = useQuery<GetPostsQuery>(GET_POSTS);
+  const [db, setDb] = useState<MyDatabase | null>(null);
+  const [posts, setPosts] = useState<Array<Posts>>([]);
+  useEffect(() => {
+    const f = async () => {
+      const db = await createDb();
+      db.posts
+        .find()
+        .sort({ created_at: 'desc' })
+        .$.subscribe((posts) => setPosts(posts));
+      setDb(db);
+    };
+    f();
+  }, []);
+
   const [content, setContent] = useState('');
   const [addPosts] = useMutation<AddPostsMutation, AddPostsMutationVariables>(
     ADD_POSTS,
   );
-  if (loading) {
-    return <div>loading...</div>;
-  }
-  if (error) {
-    return <div>error</div>;
-  }
-  if (!data) {
-    return <div>nodata</div>;
+  if (!db) {
+    return <div>loading db...</div>;
   }
   return (
     <>
@@ -82,7 +73,7 @@ export default function Top(): JSX.Element {
           <div className="mt-10">
             <h2 className="text-xl text-gray-700">All Posts</h2>
             <ul className="space-y-2">
-              {data.posts.map((post) => (
+              {posts.map((post) => (
                 <li key={post.id}>
                   <Card
                     id={post.id}

@@ -13,19 +13,20 @@ export type Scalars = {
   Int: number;
   Float: number;
   timestamptz: any;
+  uuid: any;
 };
 
-/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
-export type Int_Comparison_Exp = {
-  _eq?: Maybe<Scalars['Int']>;
-  _gt?: Maybe<Scalars['Int']>;
-  _gte?: Maybe<Scalars['Int']>;
-  _in?: Maybe<Array<Scalars['Int']>>;
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type Boolean_Comparison_Exp = {
+  _eq?: Maybe<Scalars['Boolean']>;
+  _gt?: Maybe<Scalars['Boolean']>;
+  _gte?: Maybe<Scalars['Boolean']>;
+  _in?: Maybe<Array<Scalars['Boolean']>>;
   _is_null?: Maybe<Scalars['Boolean']>;
-  _lt?: Maybe<Scalars['Int']>;
-  _lte?: Maybe<Scalars['Int']>;
-  _neq?: Maybe<Scalars['Int']>;
-  _nin?: Maybe<Array<Scalars['Int']>>;
+  _lt?: Maybe<Scalars['Boolean']>;
+  _lte?: Maybe<Scalars['Boolean']>;
+  _neq?: Maybe<Scalars['Boolean']>;
+  _nin?: Maybe<Array<Scalars['Boolean']>>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -111,7 +112,7 @@ export type Mutation_RootDelete_PostsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Posts_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -123,7 +124,7 @@ export type Mutation_RootDelete_ReplysArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Replys_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -183,7 +184,6 @@ export type Mutation_RootInsert_Users_OneArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_PostsArgs = {
-  _inc?: Maybe<Posts_Inc_Input>;
   _set?: Maybe<Posts_Set_Input>;
   where: Posts_Bool_Exp;
 };
@@ -191,7 +191,6 @@ export type Mutation_RootUpdate_PostsArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Posts_By_PkArgs = {
-  _inc?: Maybe<Posts_Inc_Input>;
   _set?: Maybe<Posts_Set_Input>;
   pk_columns: Posts_Pk_Columns_Input;
 };
@@ -199,7 +198,6 @@ export type Mutation_RootUpdate_Posts_By_PkArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_ReplysArgs = {
-  _inc?: Maybe<Replys_Inc_Input>;
   _set?: Maybe<Replys_Set_Input>;
   where: Replys_Bool_Exp;
 };
@@ -207,7 +205,6 @@ export type Mutation_RootUpdate_ReplysArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Replys_By_PkArgs = {
-  _inc?: Maybe<Replys_Inc_Input>;
   _set?: Maybe<Replys_Set_Input>;
   pk_columns: Replys_Pk_Columns_Input;
 };
@@ -247,7 +244,8 @@ export type Posts = {
   __typename?: 'posts';
   content: Scalars['String'];
   created_at: Scalars['timestamptz'];
-  id: Scalars['Int'];
+  deleted: Scalars['Boolean'];
+  id: Scalars['uuid'];
   /** fetch data from the table: "replys" */
   replys: Array<Replys>;
   /** An aggregate relationship */
@@ -288,17 +286,9 @@ export type Posts_Aggregate = {
 /** aggregate fields of "posts" */
 export type Posts_Aggregate_Fields = {
   __typename?: 'posts_aggregate_fields';
-  avg?: Maybe<Posts_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Posts_Max_Fields>;
   min?: Maybe<Posts_Min_Fields>;
-  stddev?: Maybe<Posts_Stddev_Fields>;
-  stddev_pop?: Maybe<Posts_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Posts_Stddev_Samp_Fields>;
-  sum?: Maybe<Posts_Sum_Fields>;
-  var_pop?: Maybe<Posts_Var_Pop_Fields>;
-  var_samp?: Maybe<Posts_Var_Samp_Fields>;
-  variance?: Maybe<Posts_Variance_Fields>;
 };
 
 
@@ -310,17 +300,9 @@ export type Posts_Aggregate_FieldsCountArgs = {
 
 /** order by aggregate values of table "posts" */
 export type Posts_Aggregate_Order_By = {
-  avg?: Maybe<Posts_Avg_Order_By>;
   count?: Maybe<Order_By>;
   max?: Maybe<Posts_Max_Order_By>;
   min?: Maybe<Posts_Min_Order_By>;
-  stddev?: Maybe<Posts_Stddev_Order_By>;
-  stddev_pop?: Maybe<Posts_Stddev_Pop_Order_By>;
-  stddev_samp?: Maybe<Posts_Stddev_Samp_Order_By>;
-  sum?: Maybe<Posts_Sum_Order_By>;
-  var_pop?: Maybe<Posts_Var_Pop_Order_By>;
-  var_samp?: Maybe<Posts_Var_Samp_Order_By>;
-  variance?: Maybe<Posts_Variance_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "posts" */
@@ -330,17 +312,6 @@ export type Posts_Arr_Rel_Insert_Input = {
   on_conflict?: Maybe<Posts_On_Conflict>;
 };
 
-/** aggregate avg on columns */
-export type Posts_Avg_Fields = {
-  __typename?: 'posts_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "posts" */
-export type Posts_Avg_Order_By = {
-  id?: Maybe<Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "posts". All fields are combined with a logical 'AND'. */
 export type Posts_Bool_Exp = {
   _and?: Maybe<Array<Posts_Bool_Exp>>;
@@ -348,7 +319,8 @@ export type Posts_Bool_Exp = {
   _or?: Maybe<Array<Posts_Bool_Exp>>;
   content?: Maybe<String_Comparison_Exp>;
   created_at?: Maybe<Timestamptz_Comparison_Exp>;
-  id?: Maybe<Int_Comparison_Exp>;
+  deleted?: Maybe<Boolean_Comparison_Exp>;
+  id?: Maybe<Uuid_Comparison_Exp>;
   replys?: Maybe<Replys_Bool_Exp>;
   updated_at?: Maybe<Timestamptz_Comparison_Exp>;
   user?: Maybe<Users_Bool_Exp>;
@@ -361,16 +333,12 @@ export enum Posts_Constraint {
   PostsPkey = 'posts_pkey'
 }
 
-/** input type for incrementing numeric columns in table "posts" */
-export type Posts_Inc_Input = {
-  id?: Maybe<Scalars['Int']>;
-};
-
 /** input type for inserting data into table "posts" */
 export type Posts_Insert_Input = {
   content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
+  deleted?: Maybe<Scalars['Boolean']>;
+  id?: Maybe<Scalars['uuid']>;
   replys?: Maybe<Replys_Arr_Rel_Insert_Input>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user?: Maybe<Users_Obj_Rel_Insert_Input>;
@@ -382,7 +350,7 @@ export type Posts_Max_Fields = {
   __typename?: 'posts_max_fields';
   content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
 };
@@ -401,7 +369,7 @@ export type Posts_Min_Fields = {
   __typename?: 'posts_min_fields';
   content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
 };
@@ -442,6 +410,7 @@ export type Posts_On_Conflict = {
 export type Posts_Order_By = {
   content?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
+  deleted?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   replys_aggregate?: Maybe<Replys_Aggregate_Order_By>;
   updated_at?: Maybe<Order_By>;
@@ -451,7 +420,7 @@ export type Posts_Order_By = {
 
 /** primary key columns input for table: posts */
 export type Posts_Pk_Columns_Input = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 /** select columns of table "posts" */
@@ -460,6 +429,8 @@ export enum Posts_Select_Column {
   Content = 'content',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  Deleted = 'deleted',
   /** column name */
   Id = 'id',
   /** column name */
@@ -472,53 +443,10 @@ export enum Posts_Select_Column {
 export type Posts_Set_Input = {
   content?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
+  deleted?: Maybe<Scalars['Boolean']>;
+  id?: Maybe<Scalars['uuid']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
-};
-
-/** aggregate stddev on columns */
-export type Posts_Stddev_Fields = {
-  __typename?: 'posts_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "posts" */
-export type Posts_Stddev_Order_By = {
-  id?: Maybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Posts_Stddev_Pop_Fields = {
-  __typename?: 'posts_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "posts" */
-export type Posts_Stddev_Pop_Order_By = {
-  id?: Maybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Posts_Stddev_Samp_Fields = {
-  __typename?: 'posts_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "posts" */
-export type Posts_Stddev_Samp_Order_By = {
-  id?: Maybe<Order_By>;
-};
-
-/** aggregate sum on columns */
-export type Posts_Sum_Fields = {
-  __typename?: 'posts_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "posts" */
-export type Posts_Sum_Order_By = {
-  id?: Maybe<Order_By>;
 };
 
 /** update columns of table "posts" */
@@ -528,45 +456,14 @@ export enum Posts_Update_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  Deleted = 'deleted',
+  /** column name */
   Id = 'id',
   /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
   UserId = 'user_id'
 }
-
-/** aggregate var_pop on columns */
-export type Posts_Var_Pop_Fields = {
-  __typename?: 'posts_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "posts" */
-export type Posts_Var_Pop_Order_By = {
-  id?: Maybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Posts_Var_Samp_Fields = {
-  __typename?: 'posts_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "posts" */
-export type Posts_Var_Samp_Order_By = {
-  id?: Maybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Posts_Variance_Fields = {
-  __typename?: 'posts_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "posts" */
-export type Posts_Variance_Order_By = {
-  id?: Maybe<Order_By>;
-};
 
 export type Query_Root = {
   __typename?: 'query_root';
@@ -610,7 +507,7 @@ export type Query_RootPosts_AggregateArgs = {
 
 
 export type Query_RootPosts_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -633,7 +530,7 @@ export type Query_RootReplys_AggregateArgs = {
 
 
 export type Query_RootReplys_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -664,10 +561,12 @@ export type Replys = {
   __typename?: 'replys';
   comment: Scalars['String'];
   created_at?: Maybe<Scalars['timestamptz']>;
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
+  /** An object relationship */
+  linked_post: Posts;
   /** An object relationship */
   post: Posts;
-  post_id: Scalars['Int'];
+  post_id: Scalars['uuid'];
   replied_user_id: Scalars['String'];
   updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
@@ -687,17 +586,9 @@ export type Replys_Aggregate = {
 /** aggregate fields of "replys" */
 export type Replys_Aggregate_Fields = {
   __typename?: 'replys_aggregate_fields';
-  avg?: Maybe<Replys_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Replys_Max_Fields>;
   min?: Maybe<Replys_Min_Fields>;
-  stddev?: Maybe<Replys_Stddev_Fields>;
-  stddev_pop?: Maybe<Replys_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Replys_Stddev_Samp_Fields>;
-  sum?: Maybe<Replys_Sum_Fields>;
-  var_pop?: Maybe<Replys_Var_Pop_Fields>;
-  var_samp?: Maybe<Replys_Var_Samp_Fields>;
-  variance?: Maybe<Replys_Variance_Fields>;
 };
 
 
@@ -709,17 +600,9 @@ export type Replys_Aggregate_FieldsCountArgs = {
 
 /** order by aggregate values of table "replys" */
 export type Replys_Aggregate_Order_By = {
-  avg?: Maybe<Replys_Avg_Order_By>;
   count?: Maybe<Order_By>;
   max?: Maybe<Replys_Max_Order_By>;
   min?: Maybe<Replys_Min_Order_By>;
-  stddev?: Maybe<Replys_Stddev_Order_By>;
-  stddev_pop?: Maybe<Replys_Stddev_Pop_Order_By>;
-  stddev_samp?: Maybe<Replys_Stddev_Samp_Order_By>;
-  sum?: Maybe<Replys_Sum_Order_By>;
-  var_pop?: Maybe<Replys_Var_Pop_Order_By>;
-  var_samp?: Maybe<Replys_Var_Samp_Order_By>;
-  variance?: Maybe<Replys_Variance_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "replys" */
@@ -729,19 +612,6 @@ export type Replys_Arr_Rel_Insert_Input = {
   on_conflict?: Maybe<Replys_On_Conflict>;
 };
 
-/** aggregate avg on columns */
-export type Replys_Avg_Fields = {
-  __typename?: 'replys_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-  post_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "replys" */
-export type Replys_Avg_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
-};
-
 /** Boolean expression to filter rows from the table "replys". All fields are combined with a logical 'AND'. */
 export type Replys_Bool_Exp = {
   _and?: Maybe<Array<Replys_Bool_Exp>>;
@@ -749,9 +619,10 @@ export type Replys_Bool_Exp = {
   _or?: Maybe<Array<Replys_Bool_Exp>>;
   comment?: Maybe<String_Comparison_Exp>;
   created_at?: Maybe<Timestamptz_Comparison_Exp>;
-  id?: Maybe<Int_Comparison_Exp>;
+  id?: Maybe<Uuid_Comparison_Exp>;
+  linked_post?: Maybe<Posts_Bool_Exp>;
   post?: Maybe<Posts_Bool_Exp>;
-  post_id?: Maybe<Int_Comparison_Exp>;
+  post_id?: Maybe<Uuid_Comparison_Exp>;
   replied_user_id?: Maybe<String_Comparison_Exp>;
   updated_at?: Maybe<Timestamptz_Comparison_Exp>;
   user?: Maybe<Users_Bool_Exp>;
@@ -762,22 +633,19 @@ export type Replys_Bool_Exp = {
 /** unique or primary key constraints on table "replys" */
 export enum Replys_Constraint {
   /** unique or primary key constraint */
+  ReplysIdKey = 'replys_id_key',
+  /** unique or primary key constraint */
   ReplysPkey = 'replys_pkey'
 }
-
-/** input type for incrementing numeric columns in table "replys" */
-export type Replys_Inc_Input = {
-  id?: Maybe<Scalars['Int']>;
-  post_id?: Maybe<Scalars['Int']>;
-};
 
 /** input type for inserting data into table "replys" */
 export type Replys_Insert_Input = {
   comment?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  linked_post?: Maybe<Posts_Obj_Rel_Insert_Input>;
   post?: Maybe<Posts_Obj_Rel_Insert_Input>;
-  post_id?: Maybe<Scalars['Int']>;
+  post_id?: Maybe<Scalars['uuid']>;
   replied_user_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user?: Maybe<Users_Obj_Rel_Insert_Input>;
@@ -790,8 +658,8 @@ export type Replys_Max_Fields = {
   __typename?: 'replys_max_fields';
   comment?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
-  post_id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  post_id?: Maybe<Scalars['uuid']>;
   replied_user_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
@@ -813,8 +681,8 @@ export type Replys_Min_Fields = {
   __typename?: 'replys_min_fields';
   comment?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
-  post_id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  post_id?: Maybe<Scalars['uuid']>;
   replied_user_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
@@ -852,6 +720,7 @@ export type Replys_Order_By = {
   comment?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  linked_post?: Maybe<Posts_Order_By>;
   post?: Maybe<Posts_Order_By>;
   post_id?: Maybe<Order_By>;
   replied_user_id?: Maybe<Order_By>;
@@ -863,7 +732,7 @@ export type Replys_Order_By = {
 
 /** primary key columns input for table: replys */
 export type Replys_Pk_Columns_Input = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 /** select columns of table "replys" */
@@ -888,63 +757,11 @@ export enum Replys_Select_Column {
 export type Replys_Set_Input = {
   comment?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
-  post_id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  post_id?: Maybe<Scalars['uuid']>;
   replied_user_id?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
   user_id?: Maybe<Scalars['String']>;
-};
-
-/** aggregate stddev on columns */
-export type Replys_Stddev_Fields = {
-  __typename?: 'replys_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-  post_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "replys" */
-export type Replys_Stddev_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Replys_Stddev_Pop_Fields = {
-  __typename?: 'replys_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  post_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "replys" */
-export type Replys_Stddev_Pop_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Replys_Stddev_Samp_Fields = {
-  __typename?: 'replys_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  post_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "replys" */
-export type Replys_Stddev_Samp_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
-};
-
-/** aggregate sum on columns */
-export type Replys_Sum_Fields = {
-  __typename?: 'replys_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-  post_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "replys" */
-export type Replys_Sum_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
 };
 
 /** update columns of table "replys" */
@@ -964,45 +781,6 @@ export enum Replys_Update_Column {
   /** column name */
   UserId = 'user_id'
 }
-
-/** aggregate var_pop on columns */
-export type Replys_Var_Pop_Fields = {
-  __typename?: 'replys_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  post_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "replys" */
-export type Replys_Var_Pop_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Replys_Var_Samp_Fields = {
-  __typename?: 'replys_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  post_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "replys" */
-export type Replys_Var_Samp_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Replys_Variance_Fields = {
-  __typename?: 'replys_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-  post_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "replys" */
-export type Replys_Variance_Order_By = {
-  id?: Maybe<Order_By>;
-  post_id?: Maybe<Order_By>;
-};
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
@@ -1046,7 +824,7 @@ export type Subscription_RootPosts_AggregateArgs = {
 
 
 export type Subscription_RootPosts_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -1069,7 +847,7 @@ export type Subscription_RootReplys_AggregateArgs = {
 
 
 export type Subscription_RootReplys_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -1310,6 +1088,20 @@ export enum Users_Update_Column {
   Name = 'name'
 }
 
+
+/** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
+export type Uuid_Comparison_Exp = {
+  _eq?: Maybe<Scalars['uuid']>;
+  _gt?: Maybe<Scalars['uuid']>;
+  _gte?: Maybe<Scalars['uuid']>;
+  _in?: Maybe<Array<Scalars['uuid']>>;
+  _is_null?: Maybe<Scalars['Boolean']>;
+  _lt?: Maybe<Scalars['uuid']>;
+  _lte?: Maybe<Scalars['uuid']>;
+  _neq?: Maybe<Scalars['uuid']>;
+  _nin?: Maybe<Array<Scalars['uuid']>>;
+};
+
 export type AddReplyMutationVariables = Exact<{
   object: Replys_Insert_Input;
 }>;
@@ -1320,24 +1112,6 @@ export type AddReplyMutation = (
   & { insert_replys_one?: Maybe<(
     { __typename?: 'replys' }
     & Pick<Replys, 'id'>
-  )> }
-);
-
-export type GetPostsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetPostsQuery = (
-  { __typename?: 'query_root' }
-  & { posts: Array<(
-    { __typename?: 'posts' }
-    & Pick<Posts, 'id' | 'user_id' | 'content'>
-    & { user: (
-      { __typename?: 'users' }
-      & Pick<Users, 'name'>
-    ), replys: Array<(
-      { __typename?: 'replys' }
-      & Pick<Replys, 'id' | 'comment'>
-    )> }
   )> }
 );
 
@@ -1392,49 +1166,6 @@ export function useAddReplyMutation(baseOptions?: Apollo.MutationHookOptions<Add
 export type AddReplyMutationHookResult = ReturnType<typeof useAddReplyMutation>;
 export type AddReplyMutationResult = Apollo.MutationResult<AddReplyMutation>;
 export type AddReplyMutationOptions = Apollo.BaseMutationOptions<AddReplyMutation, AddReplyMutationVariables>;
-export const GetPostsDocument = gql`
-    query getPosts {
-  posts {
-    id
-    user_id
-    content
-    user {
-      name
-    }
-    replys {
-      id
-      comment
-    }
-  }
-}
-    `;
-
-/**
- * __useGetPostsQuery__
- *
- * To run a query within a React component, call `useGetPostsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPostsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
-      }
-export function useGetPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, options);
-        }
-export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;
-export type GetPostsLazyQueryHookResult = ReturnType<typeof useGetPostsLazyQuery>;
-export type GetPostsQueryResult = Apollo.QueryResult<GetPostsQuery, GetPostsQueryVariables>;
 export const AddPostsDocument = gql`
     mutation addPosts($content: String!, $user_id: String!) {
   insert_posts(
