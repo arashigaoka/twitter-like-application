@@ -13,7 +13,7 @@ import { RxDBReplicationGraphQLPlugin } from 'rxdb/plugins/replication-graphql';
 addRxPlugin(RxDBReplicationGraphQLPlugin);
 addRxPlugin(pouchdbAdapterIdb);
 
-type MyPosts = RxCollection<Posts>;
+export type MyPosts = RxCollection<Partial<Posts>>;
 type MyDatabaseCollections = { posts: MyPosts };
 type PostsDocument = RxDocument<MyPosts>;
 export type MyDatabase = RxDatabase<MyDatabaseCollections>;
@@ -86,6 +86,36 @@ const pullQueryBuilder = (doc: PostsDocument) => {
     variables: {},
   };
 };
+
+const pushQueryBuilder = (doc: PostsDocument) => {
+  const query = `
+  mutation addPosts($post: [posts_insert_input!]!) {
+    insert_posts(
+      objects: $post
+      on_conflict: { constraint: posts_pkey, update_columns: content }
+    ) {
+      affected_rows
+    }
+  }`;
+  const variables = {
+    post: {
+      ...doc,
+      replys: {
+        data: doc.replys,
+        on_conflict: {
+          constraint: 'replys_pkey',
+          update_columns: ['comment'],
+        },
+      },
+      user: undefined,
+    },
+  };
+  return {
+    query,
+    variables,
+  };
+};
+
 const _create = async (): Promise<MyDatabase> => {
   const myDatabase = await createRxDatabase<MyDatabaseCollections>({
     name: 'mydb',
@@ -103,6 +133,9 @@ const _create = async (): Promise<MyDatabase> => {
     deletedFlag: 'deleted',
     pull: {
       queryBuilder: pullQueryBuilder,
+    },
+    push: {
+      queryBuilder: pushQueryBuilder,
     },
     live: true,
   });

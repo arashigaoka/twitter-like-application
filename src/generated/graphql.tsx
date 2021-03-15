@@ -250,7 +250,7 @@ export type Posts = {
   replys: Array<Replys>;
   /** An aggregate relationship */
   replys_aggregate: Replys_Aggregate;
-  updated_at: Scalars['timestamptz'];
+  updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
   user: Users;
   user_id: Scalars['String'];
@@ -1115,20 +1115,6 @@ export type AddReplyMutation = (
   )> }
 );
 
-export type AddPostsMutationVariables = Exact<{
-  content: Scalars['String'];
-  user_id: Scalars['String'];
-}>;
-
-
-export type AddPostsMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_posts?: Maybe<(
-    { __typename?: 'posts_mutation_response' }
-    & Pick<Posts_Mutation_Response, 'affected_rows'>
-  )> }
-);
-
 
 export const AddReplyDocument = gql`
     mutation addReply($object: replys_insert_input!) {
@@ -1166,40 +1152,3 @@ export function useAddReplyMutation(baseOptions?: Apollo.MutationHookOptions<Add
 export type AddReplyMutationHookResult = ReturnType<typeof useAddReplyMutation>;
 export type AddReplyMutationResult = Apollo.MutationResult<AddReplyMutation>;
 export type AddReplyMutationOptions = Apollo.BaseMutationOptions<AddReplyMutation, AddReplyMutationVariables>;
-export const AddPostsDocument = gql`
-    mutation addPosts($content: String!, $user_id: String!) {
-  insert_posts(
-    objects: {content: $content, user_id: $user_id}
-    on_conflict: {constraint: posts_pkey, update_columns: content}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export type AddPostsMutationFn = Apollo.MutationFunction<AddPostsMutation, AddPostsMutationVariables>;
-
-/**
- * __useAddPostsMutation__
- *
- * To run a mutation, you first call `useAddPostsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddPostsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addPostsMutation, { data, loading, error }] = useAddPostsMutation({
- *   variables: {
- *      content: // value for 'content'
- *      user_id: // value for 'user_id'
- *   },
- * });
- */
-export function useAddPostsMutation(baseOptions?: Apollo.MutationHookOptions<AddPostsMutation, AddPostsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddPostsMutation, AddPostsMutationVariables>(AddPostsDocument, options);
-      }
-export type AddPostsMutationHookResult = ReturnType<typeof useAddPostsMutation>;
-export type AddPostsMutationResult = Apollo.MutationResult<AddPostsMutation>;
-export type AddPostsMutationOptions = Apollo.BaseMutationOptions<AddPostsMutation, AddPostsMutationVariables>;
