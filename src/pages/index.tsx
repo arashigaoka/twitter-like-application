@@ -1,25 +1,10 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/organisms/Card';
-import {
-  AddPostsMutation,
-  AddPostsMutationVariables,
-  Posts,
-} from '../generated/graphql';
+import { Posts } from '../generated/graphql';
 import { createDb, MyDatabase } from '../utils/Database';
-
-const ADD_POSTS = gql`
-  mutation addPosts($content: String!, $user_id: String!) {
-    insert_posts(
-      objects: { content: $content, user_id: $user_id }
-      on_conflict: { constraint: posts_pkey, update_columns: content }
-    ) {
-      affected_rows
-    }
-  }
-`;
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Top(): JSX.Element {
   const [db, setDb] = useState<MyDatabase | null>(null);
@@ -31,15 +16,13 @@ export default function Top(): JSX.Element {
         .find()
         .sort({ created_at: 'desc' })
         .$.subscribe((posts) => setPosts(posts));
+      db.posts.insert;
       setDb(db);
     };
     f();
   }, []);
 
   const [content, setContent] = useState('');
-  const [addPosts] = useMutation<AddPostsMutation, AddPostsMutationVariables>(
-    ADD_POSTS,
-  );
   if (!db) {
     return <div>loading db...</div>;
   }
@@ -64,8 +47,10 @@ export default function Top(): JSX.Element {
             <Button
               label="Submit"
               clickHandler={() =>
-                addPosts({
-                  variables: { content, user_id: 'test1' },
+                db.posts.insert({
+                  id: uuidv4(),
+                  content,
+                  user_id: 'test1',
                 })
               }
             />
@@ -76,6 +61,7 @@ export default function Top(): JSX.Element {
               {posts.map((post) => (
                 <li key={post.id}>
                   <Card
+                    db={db}
                     id={post.id}
                     content={post.content}
                     userName={post.user.name}
