@@ -77,6 +77,9 @@ const pullQueryBuilder = (doc: PostsDocument) => {
         name
       }
       replys {
+        id
+        user_id
+        replied_user_id
         comment
       }
     }
@@ -97,17 +100,21 @@ const pushQueryBuilder = (doc: PostsDocument) => {
       affected_rows
     }
   }`;
+  const replys = {
+    data: doc.replys,
+    on_conflict: {
+      constraint: 'replys_pkey',
+      update_columns: ['comment'],
+    },
+  };
+  const { id, user_id, content, deleted } = doc;
   const variables = {
     post: {
-      ...doc,
-      replys: {
-        data: doc.replys,
-        on_conflict: {
-          constraint: 'replys_pkey',
-          update_columns: ['comment'],
-        },
-      },
-      user: undefined,
+      id,
+      user_id,
+      content,
+      deleted,
+      replys,
     },
   };
   return {

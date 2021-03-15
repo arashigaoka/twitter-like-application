@@ -61,6 +61,7 @@ export const Card = ({
                 .update({
                   $set: {
                     replys: [
+                      ...replys,
                       {
                         comment: reply,
                         user_id: 'test1',
