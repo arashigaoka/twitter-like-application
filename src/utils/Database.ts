@@ -6,19 +6,23 @@ import {
   addRxPlugin,
   RxDocument,
 } from 'rxdb';
-import { Posts } from '../generated/graphql';
+import { PullPostsQuery } from '../generated/graphql';
 import pouchdbAdapterIdb from 'pouchdb-adapter-idb';
 import { RxDBReplicationGraphQLPlugin } from 'rxdb/plugins/replication-graphql';
+import { gql } from '@apollo/client';
+import { print } from 'graphql';
+import dayjs from 'dayjs';
 
 addRxPlugin(RxDBReplicationGraphQLPlugin);
 addRxPlugin(pouchdbAdapterIdb);
 
-export type MyPosts = RxCollection<Partial<Posts>>;
-type MyDatabaseCollections = { posts: MyPosts };
-type PostsDocument = RxDocument<MyPosts>;
+type postDocType = Omit<PullPostsQuery['posts'][0], 'deleted'>;
+export type PostCollection = RxCollection<postDocType>;
+type PostsDocument = RxDocument<PostCollection>;
+type MyDatabaseCollections = { posts: PostCollection };
 export type MyDatabase = RxDatabase<MyDatabaseCollections>;
 
-const postSchema: RxJsonSchema<Partial<Posts>> = {
+const postSchema: RxJsonSchema<postDocType> = {
   title: 'post schema',
   description: 'describes post schema',
   version: 0,
@@ -46,27 +50,22 @@ const postSchema: RxJsonSchema<Partial<Posts>> = {
     replys: {
       type: 'array',
     },
-    replys_aggregate: {
-      type: 'object',
-    },
   },
   indexes: ['created_at'],
   required: ['id', 'content', 'user_id'],
 };
 
-const pullQueryBuilder = (doc: PostsDocument) => {
-  const id = doc?.id;
-  const updated_at = doc?.updated_at || '2021-03-14';
-  const query = `{
+const pullQuery = gql`
+  query pullPosts($updated_at: timestamptz!, $id: uuid) {
     posts(
       where: {
         _or: [
-          {updated_at: {_gt: "${updated_at}"}},
-          {
-            updated_at: {_eq: "${updated_at}"}${id ? `,id: {_gt: "${id}"}` : ''}
-          }
+          { updated_at: { _gt: $updated_at } }
+          { updated_at: { _eq: $updated_at }, id: { _gt: $id } }
         ]
-      }, order_by: {updated_at: desc}) {
+      }
+      order_by: [{ updated_at: asc }, { id: asc }]
+    ) {
       id
       user_id
       content
@@ -83,15 +82,20 @@ const pullQueryBuilder = (doc: PostsDocument) => {
         comment
       }
     }
-  }`;
+  }
+`;
+
+const pullQueryBuilder = (doc: PostsDocument) => {
+  const id = doc?.id;
+  const updated_at = doc?.updated_at || dayjs().format('YYYY-MM-DD');
+  const query = print(pullQuery);
   return {
     query,
-    variables: {},
+    variables: { id, updated_at },
   };
 };
 
-const pushQueryBuilder = (doc: PostsDocument) => {
-  const query = `
+const pushQuery = gql`
   mutation addPosts($post: [posts_insert_input!]!) {
     insert_posts(
       objects: $post
@@ -99,7 +103,11 @@ const pushQueryBuilder = (doc: PostsDocument) => {
     ) {
       affected_rows
     }
-  }`;
+  }
+`;
+
+const pushQueryBuilder = (doc: PostsDocument) => {
+  const query = print(pushQuery);
   const replys = {
     data: doc.replys || [],
     on_conflict: {
