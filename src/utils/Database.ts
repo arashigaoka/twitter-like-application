@@ -101,7 +101,7 @@ const pushQueryBuilder = (doc: PostsDocument) => {
     }
   }`;
   const replys = {
-    data: doc.replys,
+    data: doc.replys || [],
     on_conflict: {
       constraint: 'replys_pkey',
       update_columns: ['comment'],
