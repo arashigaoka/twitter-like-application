@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 addRxPlugin(RxDBReplicationGraphQLPlugin);
 addRxPlugin(pouchdbAdapterIdb);
 
-type postDocType = Omit<PullPostsQuery['posts'][0], 'deleted'>;
+export type postDocType = Omit<PullPostsQuery['posts'][0], 'deleted'>;
 export type PostCollection = RxCollection<postDocType>;
 type PostsDocument = RxDocument<PostCollection>;
 type MyDatabaseCollections = { posts: PostCollection };
