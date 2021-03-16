@@ -23,7 +23,7 @@ export const Card = ({
   const [reply, setReply] = useState('');
   return (
     <div>
-      <div className="border p-4 text-right">
+      <div className="border p-4 text-right relative">
         <p>{content}</p>
         <p className="text-gray-700 text-sm">by {userName}</p>
         <button
@@ -33,6 +33,27 @@ export const Card = ({
         >
           返信
         </button>
+        <div className="absolute top-1 right-1">
+          <button
+            type="button"
+            onClick={() => {
+              db.posts.find().where('id').eq(id).remove();
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-4 h-4 black"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
       {isReplyFormOpened && (
         <div className="text-gray-400 text-xs w-3/4 ml-auto">

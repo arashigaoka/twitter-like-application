@@ -1194,7 +1194,7 @@ export const AddPostsDocument = gql`
     mutation addPosts($post: [posts_insert_input!]!) {
   insert_posts(
     objects: $post
-    on_conflict: {constraint: posts_pkey, update_columns: content}
+    on_conflict: {constraint: posts_pkey, update_columns: [content, deleted]}
   ) {
     affected_rows
   }
