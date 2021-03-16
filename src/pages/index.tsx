@@ -2,13 +2,13 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/organisms/Card';
-import { Posts } from '../generated/graphql';
-import { createDb, MyDatabase } from '../utils/Database';
+import { createDb, MyDatabase, postDocType } from '../utils/Database';
 import { v4 as uuidv4 } from 'uuid';
+import dayjs from 'dayjs';
 
 export default function Top(): JSX.Element {
   const [db, setDb] = useState<MyDatabase | null>(null);
-  const [posts, setPosts] = useState<Array<Posts>>([]);
+  const [posts, setPosts] = useState<Array<postDocType>>([]);
   useEffect(() => {
     const f = async () => {
       const db = await createDb();
@@ -47,10 +47,13 @@ export default function Top(): JSX.Element {
             <Button
               label="Submit"
               clickHandler={() =>
-                db.posts.insert({
+                db.posts.upsert({
                   id: uuidv4(),
                   content,
-                  user_id: 'test1',
+                  user_id: 'test2',
+                  created_at: dayjs().format(),
+                  replys: [],
+                  user: { name: 'I am tester' },
                 })
               }
             />
