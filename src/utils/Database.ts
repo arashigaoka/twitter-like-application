@@ -87,7 +87,8 @@ const pullQuery = gql`
 
 const pullQueryBuilder = (doc: PostsDocument) => {
   const id = doc?.id;
-  const updated_at = doc?.updated_at || dayjs().format('YYYY-MM-DD');
+  const updated_at =
+    doc?.updated_at || dayjs('2021-01-01').format('YYYY-MM-DD');
   const query = print(pullQuery);
   return {
     query,
@@ -99,7 +100,10 @@ const pushQuery = gql`
   mutation addPosts($post: [posts_insert_input!]!) {
     insert_posts(
       objects: $post
-      on_conflict: { constraint: posts_pkey, update_columns: content }
+      on_conflict: {
+        constraint: posts_pkey
+        update_columns: [content, deleted]
+      }
     ) {
       affected_rows
     }
