@@ -1,31 +1,21 @@
 import React, { useState } from 'react';
-import { Replys } from '../../generated/graphql';
-import { MyDatabase } from '../../utils/Database';
+import { RxDocument } from 'rxdb';
+import { postDocType } from '../../utils/Database';
 import { Button } from '../atoms/Button';
 
 type Props = {
-  db: MyDatabase;
-  id: number;
-  content: string;
-  userName: string;
-  replys: Array<Pick<Replys, 'id' | 'comment'>>;
+  post: RxDocument<postDocType>;
 };
 
-export const Card = ({
-  db,
-  id,
-  content,
-  userName,
-  replys,
-}: Props): JSX.Element => {
+export const Card = ({ post }: Props): JSX.Element => {
   const [isReplyFormOpened, setIsReplyFormOpened] = useState(false);
 
   const [reply, setReply] = useState('');
   return (
     <div>
       <div className="border p-4 text-right relative">
-        <p>{content}</p>
-        <p className="text-gray-700 text-sm">by {userName}</p>
+        <p>{post.content}</p>
+        <p className="text-gray-700 text-sm">by {post.user.name}</p>
         <button
           type="button"
           className="mt-4 text-xs text-blue-800"
@@ -37,7 +27,7 @@ export const Card = ({
           <button
             type="button"
             onClick={() => {
-              db.posts.find().where('id').eq(id).remove();
+              post.remove();
             }}
           >
             <svg
@@ -58,7 +48,7 @@ export const Card = ({
       {isReplyFormOpened && (
         <div className="text-gray-400 text-xs w-3/4 ml-auto">
           <ul className=" space-y-2 ">
-            {replys.map((reply) => (
+            {post.replys.map((reply) => (
               <li className="border p-4 mt-2" key={reply.id}>
                 {reply.comment}
               </li>
@@ -74,24 +64,21 @@ export const Card = ({
           </ul>
           <Button
             label="reply"
-            clickHandler={() =>
-              db.posts
-                .find()
-                .where('id')
-                .eq(id)
-                .update({
-                  $set: {
-                    replys: [
-                      ...replys,
-                      {
-                        comment: reply,
-                        user_id: 'test1',
-                        replied_user_id: 'test2',
-                      },
-                    ],
-                  },
-                })
-            }
+            clickHandler={() => {
+              post.update({
+                $set: {
+                  replys: [
+                    ...post.replys,
+                    {
+                      comment: reply,
+                      user_id: 'test1',
+                      replied_user_id: 'test2',
+                    },
+                  ],
+                },
+              });
+              setReply('');
+            }}
           />
         </div>
       )}
