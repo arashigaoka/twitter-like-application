@@ -2,30 +2,22 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/atoms/Button';
 import { Card } from '../components/organisms/Card';
-import { createDb, MyDatabase, postDocType } from '../utils/Database';
+import { postDocType } from '../utils/Database';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
+import { useDatabase } from '../hooks/use-database';
 
 export default function Top(): JSX.Element {
-  const [db, setDb] = useState<MyDatabase | null>(null);
+  const db = useDatabase();
   const [posts, setPosts] = useState<Array<postDocType>>([]);
   useEffect(() => {
-    const f = async () => {
-      const db = await createDb();
-      db.posts
-        .find()
-        .sort({ created_at: 'desc' })
-        .$.subscribe((posts) => setPosts(posts));
-      db.posts.insert;
-      setDb(db);
-    };
-    f();
-  }, []);
+    db.posts
+      .find()
+      .sort({ created_at: 'desc' })
+      .$.subscribe((posts) => setPosts(posts));
+  }, [db.posts]);
 
   const [content, setContent] = useState('');
-  if (!db) {
-    return <div>loading db...</div>;
-  }
   return (
     <>
       <Head>
