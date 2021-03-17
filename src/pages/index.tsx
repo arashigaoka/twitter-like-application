@@ -6,10 +6,11 @@ import { postDocType } from '../utils/Database';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { useDatabase } from '../hooks/use-database';
+import { RxDocument } from 'rxdb';
 
 export default function Top(): JSX.Element {
   const db = useDatabase();
-  const [posts, setPosts] = useState<Array<postDocType>>([]);
+  const [posts, setPosts] = useState<Array<RxDocument<postDocType>>>([]);
   useEffect(() => {
     db.posts
       .find()
@@ -55,13 +56,7 @@ export default function Top(): JSX.Element {
             <ul className="space-y-2">
               {posts.map((post) => (
                 <li key={post.id}>
-                  <Card
-                    db={db}
-                    id={post.id}
-                    content={post.content}
-                    userName={post.user.name}
-                    replys={post.replys}
-                  />
+                  <Card post={post} />
                 </li>
               ))}
             </ul>
