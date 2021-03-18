@@ -5,12 +5,15 @@ import { addRxPlugin, createRxDatabase, RxDatabase } from 'rxdb';
 import pouchdbAdapterMemory from 'pouchdb-adapter-memory';
 import { postSchema } from '../../utils/Database';
 
-addRxPlugin(pouchdbAdapterMemory);
+const sleep = (value: number) =>
+  new Promise((resolve) => setTimeout(resolve, value));
+
 jest.mock('../../hooks/use-database');
 describe('use-top', () => {
   let result: RenderResult<TopResponse> | null = null;
   let testDb: RxDatabase | null = null;
   beforeAll(async () => {
+    addRxPlugin(pouchdbAdapterMemory);
     testDb = await createRxDatabase({
       name: 'testdb',
       adapter: 'memory',
@@ -26,7 +29,9 @@ describe('use-top', () => {
   it('render', () => {
     expect(result?.current?.posts?.length).toBe(0);
   });
-  afterAll(async () => {
+  afterAll(async (done) => {
     await testDb?.destroy();
+    await sleep(1500);
+    done();
   });
 });
