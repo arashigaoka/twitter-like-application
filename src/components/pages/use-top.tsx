@@ -28,8 +28,9 @@ export const useTop = (): TopResponse => {
       user_id: 'test2',
       created_at: dayjs().format(),
       replys: [],
-      user: { name: 'I am tester' },
+      user: { name: 'I_am_test2' },
     });
+    setContent('');
   }, [db, content]);
   return { posts, addPosts, content, setContent };
 };
