@@ -5,29 +5,48 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p $PORT",
     "lint": "eslint .",
     "fix": "yarn fix:eslint && yarn fix:prettier",
     "fix:eslint": "eslint . --fix",
     "fix:prettier": "prettier . --write",
-    "test": "jest"
+    "test": "jest",
+    "generate": "graphql-codegen --config codegen.js"
   },
   "author": "Yuta Okumura",
   "license": "MIT",
   "dependencies": {
+    "@apollo/client": "^3.3.11",
+    "@tailwindcss/forms": "^0.2.1",
     "autoprefixer": "^10.2.4",
+    "dayjs": "^1.10.4",
+    "graphql": "^15.5.0",
     "next": "^10.0.6",
     "postcss": "^8.2.4",
+    "pouchdb-adapter-idb": "^7.2.2",
+    "pouchdb-adapter-memory": "^7.2.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "tailwindcss": "^2.0.2"
+    "rxdb": "^9.15.0",
+    "tailwindcss": "^2.0.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.21.2",
+    "@graphql-codegen/introspection": "^1.18.1",
+    "@graphql-codegen/typescript": "^1.21.1",
+    "@graphql-codegen/typescript-operations": "^1.17.15",
+    "@graphql-codegen/typescript-react-apollo": "^2.2.2",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/react-hooks": "^5.1.0",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.22",
+    "@types/pouchdb-adapter-idb": "^6.1.3",
+    "@types/pouchdb-adapter-memory": "^6.1.3",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-test-renderer": "^17.0.0",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.16.0",
@@ -48,7 +67,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "npm run fix",
-    "*.{html,css,scss,json,yml,yaml,md}": "npm run fix:prettier"
+    "*.{js,jsx,ts,tsx}": "yarn fix",
+    "*.{html,css,scss,json,yml,yaml,md}": "yarn fix:prettier"
   }
 }

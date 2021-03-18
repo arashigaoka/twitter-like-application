@@ -1,1 +1,4 @@
 .next/*
+src/generated/
+graphql.schema.json
+hasura

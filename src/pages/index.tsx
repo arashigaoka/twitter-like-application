@@ -1,21 +1,6 @@
-import Head from 'next/head';
-import { Button } from '../components/atoms/Button';
-import { Title } from '../components/atoms/Title';
-import { SimpleList } from '../components/molecules/SimpleList';
+import React from 'react';
+import { Top } from '../components/pages/Top';
 
-export default function Top(): JSX.Element {
-  return (
-    <>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div className="flex flex-col justify-center items-center h-screen">
-        <Title label="This is my boilerplate. This boilerplate contains:" />
-        <SimpleList
-          labelList={['Next.js', 'TypeScript', 'Tailwind CSS', 'jest']}
-        />
-        <Button label="Click Me!" />
-      </div>
-    </>
-  );
-}
+const Index = (): JSX.Element => <Top />;
+
+export default Index;
