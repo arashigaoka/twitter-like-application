@@ -22,7 +22,7 @@ type PostsDocument = RxDocument<PostCollection>;
 type MyDatabaseCollections = { posts: PostCollection };
 export type MyDatabase = RxDatabase<MyDatabaseCollections>;
 
-const postSchema: RxJsonSchema<postDocType> = {
+export const postSchema: RxJsonSchema<postDocType> = {
   title: 'post schema',
   description: 'describes post schema',
   version: 0,
