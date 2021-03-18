@@ -5,12 +5,13 @@ import { useDatabase } from '../../hooks/use-database';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 
-export const useTop = (): {
+export type TopResponse = {
   posts: Array<RxDocument<postDocType>>;
   addPosts: () => void;
   content: string;
   setContent: (content: string) => void;
-} => {
+};
+export const useTop = (): TopResponse => {
   const db = useDatabase();
   const [posts, setPosts] = useState<Array<RxDocument<postDocType>>>([]);
   useEffect(() => {

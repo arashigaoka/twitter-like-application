@@ -67,7 +67,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "npm run fix",
-    "*.{html,css,scss,json,yml,yaml,md}": "npm run fix:prettier"
+    "*.{js,jsx,ts,tsx}": "yarn fix",
+    "*.{html,css,scss,json,yml,yaml,md}": "yarn fix:prettier"
   }
 }

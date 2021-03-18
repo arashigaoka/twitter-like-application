@@ -1,5 +1,5 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { useTop } from '../../components/pages/use-top';
+import { renderHook, RenderResult } from '@testing-library/react-hooks';
+import { TopResponse, useTop } from '../../components/pages/use-top';
 import { useDatabase } from '../../hooks/use-database';
 import { addRxPlugin, createRxDatabase, RxDatabase } from 'rxdb';
 import pouchdbAdapterMemory from 'pouchdb-adapter-memory';
@@ -8,7 +8,7 @@ import { postSchema } from '../../utils/Database';
 addRxPlugin(pouchdbAdapterMemory);
 jest.mock('../../hooks/use-database');
 describe('use-top', () => {
-  let result: any = null;
+  let result: RenderResult<TopResponse> | null = null;
   let testDb: RxDatabase | null = null;
   beforeAll(async () => {
     testDb = await createRxDatabase({
