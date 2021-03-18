@@ -148,7 +148,8 @@ const _create = async (): Promise<MyDatabase> => {
 
   console.log('DatabaseService: created database');
   const replicationState = myDatabase.posts.syncGraphQL({
-    url: 'http://localhost:8080/v1/graphql',
+    url: 'https://offline-application-server.herokuapp.com/v1/graphql',
+    // url: 'http://localhost:8080/v1/graphql',
     deletedFlag: 'deleted',
     pull: {
       queryBuilder: pullQueryBuilder,
